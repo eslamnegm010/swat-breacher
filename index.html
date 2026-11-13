@@ -1,0 +1,1939 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"
+    />
+    <title>SWAT Breacher: 25-Floor Skyscraper Takedown</title>
+    <meta
+      name="description"
+      content="Free 2.5D tactical shooter in your browser. Breach 25-floor skyscrapers, clear the rooms, rescue the hostages and take down the crew. No download."
+    />
+    <link rel="canonical" href="https://eslamnegm.is-a.dev/swat-breacher/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="SWAT Breacher" />
+    <meta
+      property="og:title"
+      content="SWAT Breacher: breach 25-floor towers, rescue hostages"
+    />
+    <meta
+      property="og:description"
+      content="Free 2.5D tactical shooter in your browser. Breach 25-floor skyscrapers, clear the rooms, rescue the hostages and take down the crew. No download."
+    />
+    <meta
+      property="og:url"
+      content="https://eslamnegm.is-a.dev/swat-breacher/"
+    />
+    <meta
+      property="og:image"
+      content="https://eslamnegm.is-a.dev/swat-breacher/og-cover.jpg"
+    />
+    <meta
+      property="og:image:secure_url"
+      content="https://eslamnegm.is-a.dev/swat-breacher/og-cover.jpg"
+    />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="SWAT Breacher: an armored SWAT operator and the game logo"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="SWAT Breacher: breach 25-floor towers, rescue hostages"
+    />
+    <meta
+      name="twitter:description"
+      content="Free 2.5D tactical shooter in your browser. Breach 25-floor skyscrapers, clear the rooms, rescue the hostages and take down the crew. No download."
+    />
+    <meta
+      name="twitter:image"
+      content="https://eslamnegm.is-a.dev/swat-breacher/og-cover.jpg"
+    />
+    <meta name="theme-color" content="#0b1020" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="SWAT Breacher" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <style>#boot-splash{z-index:100000;opacity:1;background:radial-gradient(#16213f 0%,#0b1020 60%,#05070f 100%);flex-direction:column;justify-content:center;align-items:center;gap:4vh;transition:opacity .4s;display:flex;position:fixed;top:0;bottom:0;left:0;right:0}#boot-splash.is-out{opacity:0;pointer-events:none}#boot-splash img{object-fit:contain;width:auto;max-width:60vw;height:auto;max-height:46vh}#boot-splash .bs-bar{background:#ffffff24;border-radius:2px;width:min(240px,50vw);height:3px;overflow:hidden}#boot-splash .bs-bar i{background:#38bdf8;width:40%;height:100%;animation:1.1s ease-in-out infinite bs-slide;display:block}@keyframes bs-slide{0%{transform:translate(-100%)}to{transform:translate(250%)}}@media (prefers-reduced-motion:reduce){#boot-splash{transition:none}#boot-splash .bs-bar i{width:100%;animation:none}}</style>
+    <script type="module" crossorigin src="./assets/index-Dd-IvnKV.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/three-Ctu4GVgr.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-Cr0pKaX5.css">
+  </head>
+  <body>
+    <div id="boot-splash" role="presentation">
+      <img src="logo.webp" alt="" width="900" height="777" />
+      <div class="bs-bar"><i></i></div>
+    </div>
+    <script>
+      // Boot watchdog: a plain script, so it runs even when the game module never loads. If the
+      // splash is still up after 20 s it prints the last boot step and any failed file on it.
+      (function () {
+        var errs = [];
+        window.__bootStep = "html";
+        window.addEventListener(
+          "error",
+          function (e) {
+            var t = e.target;
+            var src = t && t !== window && (t.src || t.href);
+            errs.push(src ? "failed: " + src : String(e.message || e.error));
+          },
+          true,
+        );
+        setTimeout(function () {
+          var s = document.getElementById("boot-splash");
+          if (!s || s.querySelector(".bs-err")) return;
+          var p = document.createElement("div");
+          p.className = "bs-err";
+          p.style.cssText =
+            "max-width:80vw;color:#fca5a5;font:12px/1.4 monospace;text-align:center;word-break:break-word";
+          p.textContent =
+            "Still loading. Step: " +
+            window.__bootStep +
+            (errs.length ? " | " + errs.slice(0, 4).join(" | ") : "");
+          s.appendChild(p);
+        }, 20000);
+      })();
+    </script>
+    <canvas id="canvas"></canvas>
+
+    <!-- Non-blocking Orientation Tip (Portrait Mobile) -->
+    <div
+      id="orientation-tip"
+      class="orientation-tip hidden"
+      data-hud="orientation-tip"
+    >
+      <span class="orientation-tip-icon" aria-hidden="true">
+        <svg
+          class="orientation-tip-phone"
+          viewBox="0 0 24 24"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+          <path d="M12 18h.01" />
+        </svg>
+      </span>
+      <span
+        id="orientation-tip-text"
+        class="orientation-tip-text"
+        data-i18n="tip.rotate"
+        >Turn for a wider view</span
+      >
+    </div>
+
+    <!-- Onboarding prompts and enemy cards (B8), filled by Tutorial.js -->
+    <div id="tutorial-layer" class="tutorial-layer" aria-hidden="true"></div>
+
+    <!-- Floating World-Space Interactive Prompts -->
+    <div
+      id="street-enter-prompt"
+      class="world-prompt prompt-green card hidden hud-interactive"
+    >
+      <div class="prompt-arrow">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path d="M5 12h14" />
+          <path d="m12 5 7 7-7 7" />
+        </svg>
+      </div>
+      <div class="prompt-body">
+        <strong data-i18n="prompt.enter_tower">ENTER SYNDICATE TOWER</strong>
+        <small data-i18n-html="prompt.enter_tower_hint"
+          >Press <span class="key-hint">[D]</span> or Click to enter the
+          building</small
+        >
+      </div>
+    </div>
+
+    <div
+      id="door-breach-prompt"
+      class="world-prompt prompt-orange card hidden hud-interactive"
+    >
+      <div id="door-heard-chip" class="door-heard-chip hidden">
+        <span data-i18n="hud.they_heard_you">THEY HEARD YOU</span>
+      </div>
+      <div id="door-intel-hostage-banner" class="intel-hostage-banner hidden">
+        <svg
+          viewBox="0 0 24 24"
+          width="22"
+          height="22"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <rect x="7" y="10" width="10" height="11" rx="2.5" />
+          <rect x="7" y="4" width="2.4" height="9" rx="1.2" />
+          <rect x="10" y="2.5" width="2.4" height="10" rx="1.2" />
+          <rect x="13" y="3.5" width="2.4" height="9" rx="1.2" />
+          <rect
+            x="3.5"
+            y="11"
+            width="6"
+            height="2.6"
+            rx="1.3"
+            transform="rotate(-40 6.5 12.3)"
+          />
+        </svg>
+        <span data-i18n="hud.hostage_inside"
+          >HOSTAGE INSIDE · AIM CAREFULLY</span
+        >
+      </div>
+      <div id="door-intel" class="door-intel">
+        <div class="intel-badge intel-hostiles">
+          <svg
+            class="intel-svg icon-hostile"
+            viewBox="0 0 24 24"
+            width="20"
+            height="20"
+            fill="currentColor"
+          >
+            <circle cx="12" cy="6" r="3" />
+            <path
+              d="M7 21v-5c0-1.7 1.3-3 3-3h4c1.7 0 3 1.3 3 3v5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+            />
+          </svg>
+          <span id="door-intel-hostiles-count" class="intel-num font-display"
+            >0</span
+          >
+        </div>
+        <div
+          id="door-intel-hostages-badge"
+          class="intel-badge intel-hostages hidden"
+        >
+          <svg
+            class="intel-svg icon-hostage"
+            viewBox="0 0 24 24"
+            width="20"
+            height="20"
+            fill="currentColor"
+          >
+            <circle cx="12" cy="6" r="2.5" />
+            <path
+              d="M7 9l2 3v7h6v-7l2-3"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M9 13h6"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            />
+          </svg>
+          <span id="door-intel-hostages-count" class="intel-num font-display"
+            >0</span
+          >
+        </div>
+      </div>
+      <button id="btn-kick-door" class="btn-world-action btn btn-buy">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path
+            d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"
+          />
+          <path
+            d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"
+          />
+          <path d="M16 17h4" />
+          <path d="M4 13h4" />
+        </svg>
+        <span>[E / SPACE]</span>
+        <span data-i18n="prompt.kick_door">KICK DOOR</span>
+      </button>
+      <button
+        id="btn-grenade-breach"
+        class="btn-world-action btn-world-grenade btn btn-info"
+      >
+        <svg class="icon" viewBox="0 0 24 24">
+          <circle cx="11" cy="13" r="9" />
+          <path
+            d="M14.35 4.65 16.3 2.7a2.41 2.41 0 0 1 3.4 0l1.6 1.6a2.4 2.4 0 0 1 0 3.4l-1.95 1.95"
+          />
+          <path d="m22 2-1.5 1.5" />
+        </svg>
+        <span>[G]</span>
+        <span data-i18n="prompt.breach_grenade">BREACH &amp; GRENADE</span>
+      </button>
+    </div>
+
+    <!-- Hold Fire Indicator -->
+    <div id="hold-fire-icon" class="world-prompt hold-fire-prompt hidden">
+      <svg
+        class="hold-fire-svg"
+        viewBox="0 0 24 24"
+        width="20"
+        height="20"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+      </svg>
+      <span class="hold-fire-text" data-i18n="hud.hold_fire">HOLD FIRE</span>
+    </div>
+
+    <div
+      id="elevator-enter-prompt"
+      class="world-prompt prompt-green card hidden hud-interactive"
+    >
+      <div class="prompt-body floor-clear-card">
+        <span class="elevator-prompt-line">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" />
+            <path d="M10 10h4" />
+            <path d="M10 14h4" />
+          </svg>
+          <span data-i18n="floor_clear.ascend"
+            >Walk inside Glass Elevator to Ascend</span
+          >
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="m5 12 7-7 7 7" />
+            <path d="M12 19V5" />
+          </svg>
+        </span>
+      </div>
+    </div>
+
+    <!-- Tactical Overlay HUD -->
+    <div id="hud">
+      <div id="hud-vignette" class="hud-vignette" aria-hidden="true"></div>
+      <div id="hud-hit-l" class="hud-hit-arc is-left" aria-hidden="true"></div>
+      <div id="hud-hit-r" class="hud-hit-arc is-right" aria-hidden="true"></div>
+      <div id="hud-flashbang" class="hud-flashbang" aria-hidden="true"></div>
+      <!-- TOP STATUS BAR -->
+      <div class="hud-top">
+        <div class="hud-top-left" data-hud="top-left">
+          <div class="floor-nav hud-interactive">
+            <button
+              id="btn-prev-floor"
+              class="btn-floor-step debug-only"
+              data-i18n-title="hud.prev_floor"
+              title="Previous Floor"
+            >
+              <svg class="icon" viewBox="0 0 24 24">
+                <path d="m15 18-6-6 6-6" />
+              </svg>
+            </button>
+            <div class="badge-floor" id="hud-floor">FLOOR 1 / 25</div>
+            <button
+              id="btn-next-floor-debug"
+              class="btn-floor-step debug-only"
+              data-i18n-title="hud.next_floor"
+              title="Next Floor"
+            >
+              <svg class="icon" viewBox="0 0 24 24">
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </button>
+          </div>
+          <div class="hud-perks is-empty" id="hud-perks" role="list"></div>
+          <div class="badge-theme" id="hud-theme">GROUND LOBBY</div>
+          <div class="badge-enemies" id="hud-enemies" role="img"></div>
+          <div id="cover-indicator" class="badge-cover hidden">
+            <svg class="icon-inline" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"
+              />
+            </svg>
+            <span data-i18n="hud.in_cover">IN COVER (HEAD HIDDEN)</span>
+          </div>
+        </div>
+
+        <!-- Center Focus (Bullet-Time) & Boss Bar -->
+        <div class="hud-top-center" data-hud="top-center">
+          <div class="focus-container">
+            <div class="focus-label">
+              <svg
+                class="icon-inline focus-icon"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+              </svg>
+              <span class="focus-text"
+                ><span data-i18n="hud.focus">CHRONO FOCUS</span>
+                <span class="key-hint">[R-CLICK / Q]</span></span
+              >
+            </div>
+            <div class="focus-track bar">
+              <div
+                id="focus-fill"
+                class="focus-fill bar-fill bar-fill-focus"
+              ></div>
+            </div>
+          </div>
+
+          <div id="boss-bar-container" class="boss-bar-container hidden">
+            <div class="boss-label">
+              <svg class="icon" viewBox="0 0 24 24">
+                <path d="m12.5 17-.5-1-.5 1h1z" />
+                <path
+                  d="M15 22a1 1 0 0 0 1-1v-1a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 20v1a1 1 0 0 0 1 1z"
+                />
+                <circle cx="15" cy="12" r="1" />
+                <circle cx="9" cy="12" r="1" />
+              </svg>
+              <span id="boss-name">SYNDICATE FLOOR BOSS</span>
+              <svg class="icon" viewBox="0 0 24 24">
+                <path d="m12.5 17-.5-1-.5 1h1z" />
+                <path
+                  d="M15 22a1 1 0 0 0 1-1v-1a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 20v1a1 1 0 0 0 1 1z"
+                />
+                <circle cx="15" cy="12" r="1" />
+                <circle cx="9" cy="12" r="1" />
+              </svg>
+            </div>
+            <div class="boss-track bar">
+              <div
+                id="boss-fill"
+                class="boss-fill bar-fill bar-fill-boss"
+              ></div>
+              <span class="boss-tick" aria-hidden="true"></span>
+            </div>
+          </div>
+        </div>
+
+        <div
+          id="boss-intro"
+          class="boss-intro hidden"
+          role="status"
+          aria-live="polite"
+        >
+          <div id="boss-intro-flash" class="boss-intro-flash"></div>
+          <div class="boss-intro-card">
+            <svg class="icon boss-intro-icon" viewBox="0 0 24 24">
+              <path d="m12.5 17-.5-1-.5 1h1z" />
+              <path
+                d="M15 22a1 1 0 0 0 1-1v-1a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 20v1a1 1 0 0 0 1 1z"
+              />
+              <circle cx="15" cy="12" r="1" />
+              <circle cx="9" cy="12" r="1" />
+            </svg>
+            <div class="boss-intro-text">
+              <span id="boss-intro-kicker" class="boss-intro-kicker"></span>
+              <span id="boss-intro-title" class="boss-intro-title"></span>
+              <span id="boss-intro-line" class="boss-intro-line"></span>
+            </div>
+          </div>
+        </div>
+
+        <div id="hud-combo" class="hud-combo card hidden" data-hud="top-combo">
+          <span class="hud-combo-label" data-i18n="hud.combo">COMBO</span>
+          <span id="hud-combo-val" class="hud-combo-val title">x2</span>
+        </div>
+
+        <div class="hud-top-right hud-interactive" data-hud="top-right">
+          <button
+            id="btn-open-armory"
+            class="btn-top-util btn-top-armory btn btn-reward"
+            data-i18n-title="hud.armory_title"
+            title="Open Weapon Loadout"
+          >
+            <svg class="icon-inline" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M21 7h-2V5c0-1.1-.9-2-2-2H7c-1.1 0-2 .9-2 2v2H3c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zM7 5h10v2H7V5z"
+              />
+            </svg>
+            <span data-i18n="hud.armory_btn">ARMORY</span>
+            <span class="key-hint">[TAB]</span>
+          </button>
+          <button
+            id="btn-open-pause"
+            class="btn-top-util btn-top-pause btn btn-info"
+            data-i18n-title="hud.pause_title"
+            title="Pause Game"
+          >
+            <svg class="icon-inline" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+            </svg>
+            <span data-i18n="hud.pause_btn">PAUSE</span>
+            <span class="key-hint">[ESC]</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Exterior Tower Cutscene Banner -->
+      <div id="intro-banner" class="intro-banner panel hidden">
+        <div class="intro-subtitle" data-i18n="intro.subtitle">
+          25-FLOOR TACTICAL BREACH OPERATION
+        </div>
+        <div class="intro-title title" data-i18n="intro.title">
+          SYNDICATE TOWER
+        </div>
+        <button
+          id="btn-skip-intro"
+          class="btn-skip-intro btn btn-primary hud-interactive"
+        >
+          <span data-i18n="intro.enter">ENTER STREET LEVEL</span>
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- PUBG-STYLE GRAPHICAL BOTTOM HUD -->
+      <div class="hud-bottom">
+        <!-- LEFT: Health Shield & Grenade Pocket -->
+        <div class="hud-bottom-left" data-hud="bottom-left">
+          <!-- Armor / Health Card -->
+          <div class="stat-card stat-health-card card">
+            <div class="health-icon-box">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"
+                />
+              </svg>
+            </div>
+            <div class="health-col">
+              <div class="health-meta">
+                <span class="stat-label" data-i18n="hud.armor"
+                  >KEVLAR ARMOR</span
+                >
+                <span class="stat-value" id="hud-health">125</span>
+              </div>
+              <div class="health-track bar">
+                <div
+                  id="health-fill"
+                  class="health-fill bar-fill bar-fill-armor"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tactical Grenade Pocket (PUBG Style) -->
+          <div class="grenade-pocket card hud-interactive">
+            <div class="pocket-label" data-i18n="hud.grenades">
+              TACTICAL GRENADES
+            </div>
+            <div id="grenade-slots" class="grenade-slots"></div>
+            <button
+              id="btn-throw-grenade"
+              class="btn-throw-grenade btn btn-buy"
+            >
+              <svg class="icon-inline" viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="12" r="10" />
+              </svg>
+              <span data-i18n="hud.throw">THROW</span>
+              <span class="key-hint">[G]</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- RIGHT: Equipped Weapon Card & Quick Switch Slots -->
+        <div
+          class="weapon-hud-group hud-interactive"
+          data-hud="weapon-hud-group"
+        >
+          <!-- Big Active Weapon Card -->
+          <div class="active-weapon-card card">
+            <div class="active-weapon-silhouette" id="hud-active-silhouette">
+              <!-- Dynamically populated SVG -->
+            </div>
+            <div class="active-weapon-details">
+              <div class="active-weapon-header">
+                <span class="active-weapon-name" id="hud-weapon-name"
+                  >TACTICAL 9MM</span
+                >
+                <span class="active-weapon-tag" id="hud-weapon-tag"
+                  >SEMI-AUTO</span
+                >
+              </div>
+              <div class="active-weapon-ammo">
+                <div class="ammo-numbers">
+                  <span class="ammo-cur" id="hud-ammo-cur">16</span>
+                  <span class="ammo-slash">/</span>
+                  <span class="ammo-max" id="hud-ammo-max">16</span>
+                </div>
+                <div
+                  class="ammo-reload-state"
+                  id="hud-ammo-state"
+                  data-i18n="hud.ammo_ready"
+                >
+                  READY
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Weapon Slots (1, 2, 3, 4) with Visual Silhouettes -->
+          <div id="weapon-slots" class="weapon-slots"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Touch Controls Overlay -->
+    <div id="touch-controls" class="touch-controls">
+      <!-- Floating Movement Stick -->
+      <div id="touch-stick-container" class="touch-stick-container">
+        <div id="touch-stick-base" class="touch-stick-base">
+          <div id="touch-stick-knob" class="touch-stick-knob"></div>
+        </div>
+      </div>
+
+      <!-- Contextual Action Button (BREACH / KICK / ENTER) -->
+      <button
+        id="touch-btn-contextual"
+        class="touch-btn touch-btn-contextual hidden"
+        data-hud="touch-contextual"
+      >
+        <span id="touch-contextual-icon" class="touch-btn-icon"></span>
+        <span
+          id="touch-contextual-label"
+          class="touch-btn-label"
+          data-i18n="touch.breach"
+          >BREACH</span
+        >
+      </button>
+
+      <!-- Bottom-Right Action Buttons Arc -->
+      <div id="touch-actions" class="touch-actions" data-hud="touch-actions">
+        <!-- Fire: hold to shoot, aims at the nearest threat by itself -->
+        <button
+          id="touch-btn-fire"
+          class="touch-btn touch-btn-fire"
+          data-i18n-title="touch.fire"
+          title="Fire (hold)"
+        >
+          <svg
+            class="touch-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="8" />
+            <circle cx="12" cy="12" r="2.5" fill="currentColor" />
+            <line x1="12" y1="1" x2="12" y2="5" />
+            <line x1="12" y1="19" x2="12" y2="23" />
+            <line x1="1" y1="12" x2="5" y2="12" />
+            <line x1="19" y1="12" x2="23" y2="12" />
+          </svg>
+        </button>
+
+        <!-- Roll -->
+        <button
+          id="touch-btn-roll"
+          class="touch-btn touch-btn-roll"
+          data-i18n-title="touch.roll"
+          title="Dodge Roll"
+        >
+          <svg
+            class="touch-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="m13 17 5-5-5-5" />
+            <path d="m6 17 5-5-5-5" />
+          </svg>
+        </button>
+
+        <!-- Grenade -->
+        <button
+          id="touch-btn-grenade"
+          class="touch-btn touch-btn-grenade"
+          data-i18n-title="touch.grenade"
+          title="Throw Grenade / Hold to Pick"
+        >
+          <svg
+            class="touch-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="11" cy="13" r="9" />
+            <path
+              d="M14.35 4.65 16.3 2.7a2.41 2.41 0 0 1 3.4 0l1.6 1.6a2.4 2.4 0 0 1 0 3.4l-1.95 1.95"
+            />
+            <path d="m22 2-1.5 1.5" />
+          </svg>
+          <span id="touch-grenade-count" class="touch-badge">0</span>
+        </button>
+
+        <!-- Reload -->
+        <button
+          id="touch-btn-reload"
+          class="touch-btn touch-btn-reload"
+          data-i18n-title="touch.reload"
+          title="Reload Firearm"
+        >
+          <svg
+            class="touch-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="8" y="2" width="8" height="14" rx="1.5" />
+            <path d="M8 16l-1 6h10l-1-6" />
+            <line x1="10.5" y1="6" x2="13.5" y2="6" />
+            <line x1="10.5" y1="9.5" x2="13.5" y2="9.5" />
+            <line x1="10.5" y1="13" x2="13.5" y2="13" />
+          </svg>
+        </button>
+
+        <!-- Slow-mo (hold) -->
+        <button
+          id="touch-btn-focus"
+          class="touch-btn touch-btn-focus"
+          data-i18n-title="touch.focus"
+          title="Slow-mo (Hold)"
+        >
+          <svg
+            class="touch-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M5 22h14" />
+            <path d="M5 2h14" />
+            <path
+              d="M17 22v-4.17a2 2 0 0 0-.59-1.42L12 12l-4.41 4.41A2 2 0 0 0 7 17.83V22"
+            />
+            <path
+              d="M7 2v4.17a2 2 0 0 0 .59 1.42L12 12l4.41-4.41A2 2 0 0 0 17 6.17V2"
+            />
+          </svg>
+        </button>
+
+        <!-- Radial Grenade Picker -->
+        <div id="radial-grenade-picker" class="radial-grenade-picker hidden">
+          <button class="radial-picker-option" data-type="frag">
+            <span class="radial-picker-title" data-i18n="grenade.frag.short"
+              >FRAG</span
+            >
+            <span class="radial-picker-count" id="radial-count-frag">0</span>
+          </button>
+          <button class="radial-picker-option" data-type="gas">
+            <span class="radial-picker-title" data-i18n="grenade.gas.short"
+              >GAS</span
+            >
+            <span class="radial-picker-count" id="radial-count-gas">0</span>
+          </button>
+          <button class="radial-picker-option" data-type="smoke">
+            <span class="radial-picker-title" data-i18n="grenade.smoke.short"
+              >SMK</span
+            >
+            <span class="radial-picker-count" id="radial-count-smoke">0</span>
+          </button>
+          <button class="radial-picker-option" data-type="flash">
+            <span class="radial-picker-title" data-i18n="grenade.flash.short"
+              >FLASH</span
+            >
+            <span class="radial-picker-count" id="radial-count-flash">0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARMORY & LOADOUT MODAL (Tab / B / Button) -->
+    <div id="armory-modal" class="modal-backdrop hidden">
+      <div class="modal-card armory-card panel">
+        <div class="armory-header">
+          <div class="armory-header-left">
+            <h2 class="title armory-title" data-i18n="armory.title_short">
+              ARMORY
+            </h2>
+            <div id="armory-merits-pill" class="armory-merits-pill">
+              <svg
+                class="armory-coin-icon"
+                viewBox="0 0 24 24"
+                width="15"
+                height="15"
+                fill="currentColor"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="9"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <path
+                  d="M12 7v10M9 10h6"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <span id="armory-merits-val">0</span>
+            </div>
+          </div>
+          <button
+            id="btn-close-armory"
+            class="btn-modal-close"
+            data-i18n-title="armory.close"
+            title="Close Armory"
+          >
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="armory-nav">
+          <div class="armory-tabs" role="tablist">
+            <button
+              id="armory-tab-weapons"
+              class="armory-tab active"
+              data-tab="weapons"
+              data-i18n="armory.tab_weapons"
+            >
+              WEAPONS
+            </button>
+            <button
+              id="armory-tab-grenades"
+              class="armory-tab"
+              data-tab="grenades"
+              data-i18n="armory.tab_grenades"
+            >
+              GRENADES
+            </button>
+            <button
+              id="armory-tab-officer"
+              class="armory-tab"
+              data-tab="officer"
+            >
+              <svg
+                class="armory-tab-icon"
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="7" r="4.2" />
+                <path
+                  d="M12 13c-4.4 0-8 2.4-8 5.6V21h16v-2.4c0-3.2-3.6-5.6-8-5.6z"
+                />
+              </svg>
+              <span data-i18n="armory.tab_officer">OFFICER</span>
+            </button>
+          </div>
+          <div id="armory-chips" class="armory-chips">
+            <!-- Populated dynamically with weapon category chips -->
+          </div>
+        </div>
+
+        <div class="armory-body">
+          <div class="armory-list-wrapper">
+            <div id="armory-list" class="armory-list">
+              <!-- Populated dynamically with weapon/grenade rows -->
+            </div>
+            <div id="armory-more-hint" class="armory-more-hint">
+              <span id="armory-more-text">▼ 0 MORE</span>
+            </div>
+          </div>
+          <div id="armory-detail" class="armory-detail">
+            <!-- Populated dynamically with weapon/grenade details -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN MENU (returning players; the 3D tower orbits behind it) -->
+    <div
+      id="main-menu"
+      class="main-menu hidden"
+      role="dialog"
+      aria-labelledby="mm-logo-title"
+    >
+      <header class="mm-top">
+        <div class="mm-logo">
+          <div class="mm-logo-text">
+            <img
+              class="mm-logo-img"
+              src="logo-wordmark.webp"
+              alt="SWAT Breacher"
+              width="900"
+              height="517"
+              draggable="false"
+            />
+            <h1 id="mm-logo-title" class="mm-logo-title-sr">SWAT Breacher</h1>
+            <div id="mm-rank" class="mm-rank">
+              <span id="mm-rank-emblem" class="mm-rank-emblem"></span>
+              <span class="mm-rank-main">
+                <span id="mm-rank-name" class="mm-rank-name title"></span>
+                <span class="mm-rank-bar"><i id="mm-rank-fill"></i></span>
+              </span>
+              <span id="mm-rank-xp" class="mm-rank-xp title"></span>
+            </div>
+          </div>
+        </div>
+        <div class="mm-stats">
+          <div class="mm-pill mm-pill-merits" aria-live="polite">
+            <svg class="mm-pill-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" class="mm-coin-face" />
+              <circle cx="12" cy="12" r="6.5" class="mm-coin-ring" />
+              <path d="M12 8v8M9.6 10.2h4.8" class="mm-coin-mark" />
+            </svg>
+            <span id="mm-merits" class="mm-pill-val title">0</span>
+          </div>
+          <div class="mm-pill mm-pill-stars">
+            <svg class="mm-pill-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                class="mm-star-shape"
+                d="M12 2.4l2.9 6.1 6.7.9-4.9 4.6 1.2 6.6L12 17.4l-5.9 3.2 1.2-6.6L2.4 9.4l6.7-.9z"
+              />
+            </svg>
+            <span id="mm-stars" class="mm-pill-val title">0</span>
+          </div>
+          <div class="mm-lang-wrap">
+            <button
+              id="mm-lang"
+              class="btn btn-info mm-gear mm-lang-btn"
+              type="button"
+              aria-haspopup="true"
+              aria-expanded="false"
+              aria-controls="mm-lang-sheet"
+              data-i18n-title="menu.language"
+              data-i18n-aria="menu.language"
+              title="Language"
+              aria-label="Language"
+            >
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M2 12h20" />
+                <path
+                  d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+                />
+              </svg>
+              <span id="mm-lang-code" class="mm-lang-code title">EN</span>
+            </button>
+            <div
+              id="mm-lang-backdrop"
+              class="mm-lang-backdrop hidden"
+              aria-hidden="true"
+            ></div>
+            <div
+              id="mm-lang-sheet"
+              class="mm-lang-sheet hidden"
+              role="menu"
+              data-i18n-aria="menu.language"
+              aria-label="Language"
+            >
+              <div class="mm-lang-head title" data-i18n="menu.language">
+                Language
+              </div>
+              <div id="mm-lang-list" class="mm-lang-list"></div>
+            </div>
+          </div>
+          <button
+            id="mm-settings"
+            class="btn btn-info mm-gear"
+            data-i18n-title="set.title"
+            title="Settings"
+            aria-label="Settings"
+          >
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+              />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <aside class="mm-tower" aria-hidden="true">
+        <div class="mm-tower-cap title" id="mm-tower-top">25</div>
+        <ol id="mm-tower-bar" class="mm-tower-bar"></ol>
+      </aside>
+
+      <div class="mm-bottom">
+        <button id="mm-play" class="btn btn-primary mm-play">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <polygon points="6 3 20 12 6 21 6 3" />
+          </svg>
+          <span data-i18n="menu.play">PLAY</span>
+        </button>
+        <div id="mm-checkpoint" class="mm-checkpoint title">
+          FLOOR 1 · SYNDICATE TOWER
+        </div>
+        <button id="mm-endless" class="btn btn-danger mm-endless hidden">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M18.2 8.2c-2.6 0-4 2-6.2 3.8s-3.6 3.8-6.2 3.8a3.8 3.8 0 1 1 0-7.6c2.6 0 4 2 6.2 3.8s3.6 3.8 6.2 3.8a3.8 3.8 0 1 0 0-7.6z"
+            />
+          </svg>
+          <span data-i18n="menu.endless">ENDLESS TOWER</span>
+          <span id="mm-endless-record" class="mm-endless-record title"></span>
+        </button>
+        <div class="mm-tiles">
+          <button id="mm-armory" class="btn btn-buy mm-tile">
+            <svg class="tile-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="2" y="7" width="20" height="14" rx="2" />
+              <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+              <path d="M2 13h20" />
+            </svg>
+            <span data-i18n="pause.armory_short">ARMORY</span>
+            <span
+              id="mm-armory-dot"
+              class="mm-dot hidden"
+              aria-hidden="true"
+            ></span>
+          </button>
+          <button id="mm-towers" class="btn btn-info mm-tile">
+            <svg class="tile-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="4" y="9" width="6" height="12" rx="1" />
+              <rect x="13" y="3" width="7" height="18" rx="1" />
+              <path d="M7 13h0M7 17h0M16.5 8h0M16.5 12h0M16.5 16h0" />
+            </svg>
+            <span data-i18n="menu.towers">TOWERS</span>
+          </button>
+          <button id="mm-daily" class="btn btn-info mm-tile">
+            <svg class="tile-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3.5" y="5" width="17" height="15.5" rx="2.5" />
+              <path d="M3.5 10h17M8 3v4M16 3v4" />
+              <path d="m9 15 2.2 2.2L15.5 13" />
+            </svg>
+            <span data-i18n="menu.daily">DAILY</span>
+            <span
+              id="mm-daily-dot"
+              class="mm-dot hidden"
+              aria-hidden="true"
+            ></span>
+          </button>
+          <button id="mm-coop" class="btn btn-primary mm-tile">
+            <svg class="tile-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="8" cy="8" r="3" />
+              <circle cx="16.5" cy="9" r="2.5" />
+              <path d="M2.5 20c0-3.6 2.4-6 5.5-6s5.5 2.4 5.5 6" />
+              <path d="M14.5 14.3c.7-.2 1.3-.3 2-.3 2.7 0 4.5 2 4.5 5" />
+            </svg>
+            <span data-i18n="coop.tile">CO-OP</span>
+          </button>
+          <button id="mm-medals" class="btn btn-reward mm-tile">
+            <svg class="tile-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 2h3l1 5M16 2h-3l-1 5" />
+              <circle cx="12" cy="14.5" r="6" />
+              <path
+                d="m12 11.5 1 2 2.2.3-1.6 1.6.4 2.2-2-1-2 1 .4-2.2-1.6-1.6 2.2-.3z"
+              />
+            </svg>
+            <span data-i18n="menu.medals">MEDALS</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="coop-toast" class="coop-toast" aria-live="polite"></div>
+
+    <!-- CO-OP LOBBY (C10) -->
+    <div id="coop-lobby" class="modal-backdrop hidden">
+      <div
+        class="modal-card coop-card panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="coop-title"
+      >
+        <h2 id="coop-title" class="title" data-i18n="coop.title">CO-OP</h2>
+        <div id="coop-choose" class="coop-choose">
+          <button id="coop-host" class="btn btn-primary" type="button">
+            <span data-i18n="coop.host">HOST</span>
+          </button>
+          <button id="coop-host-race" class="btn btn-info" type="button">
+            <span data-i18n="coop.mode_race">RACE</span>
+          </button>
+          <div class="coop-join">
+            <input
+              id="coop-code-input"
+              class="coop-input title"
+              type="text"
+              maxlength="5"
+              autocomplete="off"
+              autocapitalize="characters"
+              spellcheck="false"
+              placeholder="ABCDE"
+              data-i18n-aria="coop.code_label"
+              aria-label="Room code"
+            />
+            <button id="coop-join" class="btn btn-info" type="button">
+              <span data-i18n="coop.join">JOIN</span>
+            </button>
+          </div>
+        </div>
+        <div id="coop-room" class="coop-room hidden">
+          <div class="coop-code-label" data-i18n="coop.code_label">
+            ROOM CODE
+          </div>
+          <div id="coop-code" class="coop-code title"></div>
+          <button id="coop-copy" class="btn btn-info" type="button">
+            <span data-i18n="coop.copy_link">COPY LINK</span>
+          </button>
+          <ul class="coop-seats">
+            <li class="coop-seat" id="coop-seat-0">
+              <span class="coop-dot coop-dot-0"></span>
+              <span id="coop-name-0"></span>
+            </li>
+            <li class="coop-seat" id="coop-seat-1">
+              <span class="coop-dot coop-dot-1"></span>
+              <span id="coop-name-1"></span>
+            </li>
+          </ul>
+          <div class="coop-modes" id="coop-modes" role="group">
+            <button id="coop-mode-coop" class="coop-mode is-on" type="button">
+              <span data-i18n="coop.mode_coop">CO-OP</span>
+            </button>
+            <button id="coop-mode-race" class="coop-mode" type="button">
+              <span data-i18n="coop.mode_race">RACE</span>
+            </button>
+          </div>
+          <button id="coop-start" class="btn btn-primary hidden" type="button">
+            <span data-i18n="coop.start">START</span>
+          </button>
+        </div>
+        <!-- Outside the room view so "room not found" stays visible after leaving. -->
+        <div id="coop-status" class="coop-status"></div>
+        <button id="coop-back" class="btn btn-info" type="button">
+          <span data-i18n="coop.back">BACK</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- BREACH RACE (C12) -->
+    <div id="race-bar" class="race-bar hidden" aria-live="off">
+      <div class="race-track">
+        <i class="race-tick" style="left: 20%"></i>
+        <i class="race-tick" style="left: 40%"></i>
+        <i class="race-tick" style="left: 60%"></i>
+        <i class="race-tick" style="left: 80%"></i>
+        <span id="race-opp" class="race-mark race-mark-opp"></span>
+        <span id="race-me" class="race-mark race-mark-me"></span>
+      </div>
+      <div class="race-names">
+        <span id="race-me-label" class="race-label race-label-me"></span>
+        <span id="race-clock" class="race-clock title"></span>
+        <span id="race-opp-label" class="race-label race-label-opp"></span>
+      </div>
+    </div>
+    <div id="race-result" class="modal-backdrop hidden">
+      <div
+        class="modal-card race-card panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="race-title"
+      >
+        <div class="race-id">
+          <h2 id="race-title" class="title"></h2>
+          <p id="race-sub" class="race-sub"></p>
+        </div>
+        <div id="race-splits" class="race-splits"></div>
+        <div id="race-reward" class="race-reward"></div>
+        <button id="race-rematch" class="btn btn-primary" type="button">
+          <span data-i18n="race.rematch">REMATCH</span>
+        </button>
+        <button id="race-menu" class="btn btn-info" type="button">
+          <span data-i18n="race.menu">MENU</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- DAILY OPS (B14) -->
+    <div id="daily-modal" class="modal-backdrop hidden">
+      <div
+        class="modal-card daily-card panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="daily-title"
+      >
+        <div class="daily-header">
+          <div class="daily-emblem" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <rect x="3.5" y="5" width="17" height="15.5" rx="2.5" />
+              <path d="M3.5 10h17M8 3v4M16 3v4" />
+              <path d="m9 15 2.2 2.2L15.5 13" />
+            </svg>
+          </div>
+          <h2 id="daily-title" class="title" data-i18n="daily.title">
+            DAILY OPS
+          </h2>
+          <button
+            id="daily-close"
+            class="daily-close"
+            type="button"
+            data-i18n-aria="daily.close"
+            aria-label="Close"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12M18 6 6 18" />
+            </svg>
+          </button>
+        </div>
+        <div class="daily-body">
+          <section class="daily-streak">
+            <div class="daily-section-head">
+              <span data-i18n="daily.streak">DAY STREAK</span>
+              <span id="daily-streak-note" class="daily-note hidden"></span>
+            </div>
+            <div id="daily-days" class="daily-days"></div>
+            <button
+              id="daily-claim"
+              class="btn btn-primary daily-claim"
+              type="button"
+            >
+              <span id="daily-claim-text" data-i18n="daily.claim">CLAIM</span>
+            </button>
+          </section>
+          <section class="daily-missions-wrap">
+            <div class="daily-section-head">
+              <span data-i18n="daily.missions">TODAY'S MISSIONS</span>
+            </div>
+            <div id="daily-missions" class="daily-missions"></div>
+            <button
+              id="daily-crate"
+              class="btn btn-reward daily-crate hidden"
+              type="button"
+            >
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 8.5 12 4l9 4.5v8L12 21l-9-4.5z" />
+                <path d="m3 8.5 9 4.5 9-4.5M12 13v8" />
+              </svg>
+              <span id="daily-crate-text">OPEN CRATE</span>
+            </button>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEDALS and LOCKER (C7) -->
+    <svg
+      class="mb-defs"
+      width="0"
+      height="0"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <defs>
+        <linearGradient id="mb-g-0" x1="0" y1="0" x2="0" y2="1">
+          <stop class="mb-s mb-s0a" offset="0" />
+          <stop class="mb-s mb-s0b" offset="0.55" />
+          <stop class="mb-s mb-s0c" offset="1" />
+        </linearGradient>
+        <linearGradient id="mb-g-1" x1="0" y1="0" x2="0" y2="1">
+          <stop class="mb-s mb-s1a" offset="0" />
+          <stop class="mb-s mb-s1b" offset="0.55" />
+          <stop class="mb-s mb-s1c" offset="1" />
+        </linearGradient>
+        <linearGradient id="mb-g-2" x1="0" y1="0" x2="0" y2="1">
+          <stop class="mb-s mb-s2a" offset="0" />
+          <stop class="mb-s mb-s2b" offset="0.55" />
+          <stop class="mb-s mb-s2c" offset="1" />
+        </linearGradient>
+        <linearGradient id="mb-g-3" x1="0" y1="0" x2="0" y2="1">
+          <stop class="mb-s mb-s3a" offset="0" />
+          <stop class="mb-s mb-s3b" offset="0.55" />
+          <stop class="mb-s mb-s3c" offset="1" />
+        </linearGradient>
+      </defs>
+    </svg>
+    <div id="medals-modal" class="modal-backdrop hidden">
+      <div
+        class="modal-card daily-card medals-card panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="medals-title"
+      >
+        <div class="daily-header">
+          <div class="daily-emblem medals-emblem" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M8 2h3l1 5M16 2h-3l-1 5" />
+              <circle cx="12" cy="14.5" r="6" />
+              <path
+                d="m12 11.5 1 2 2.2.3-1.6 1.6.4 2.2-2-1-2 1 .4-2.2-1.6-1.6 2.2-.3z"
+              />
+            </svg>
+          </div>
+          <h2 id="medals-title" class="title" data-i18n="medals.title">
+            MEDALS
+          </h2>
+          <button
+            id="medals-close"
+            class="daily-close"
+            type="button"
+            data-i18n-aria="daily.close"
+            aria-label="Close"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12M18 6 6 18" />
+            </svg>
+          </button>
+        </div>
+        <div class="medals-bar">
+          <span id="medals-rank" class="medals-rank title"></span>
+          <span id="medals-count" class="medals-count title"></span>
+        </div>
+        <div class="medals-tabs" role="tablist">
+          <button
+            id="medals-tab-medals"
+            class="medals-tab is-on"
+            type="button"
+            role="tab"
+            data-i18n="medals.tab_medals"
+          >
+            MEDALS
+          </button>
+          <button
+            id="medals-tab-locker"
+            class="medals-tab"
+            type="button"
+            role="tab"
+            data-i18n="medals.tab_locker"
+          >
+            LOCKER
+          </button>
+        </div>
+        <div class="medals-body">
+          <div id="medals-grid" class="medals-grid"></div>
+          <div id="medals-locker" class="medals-locker hidden"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOWER MAP (C5): skyline with one building per tower -->
+    <div id="towers-modal" class="modal-backdrop hidden">
+      <div
+        class="modal-card daily-card towers-card panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="towers-title"
+      >
+        <div class="daily-header">
+          <div class="daily-emblem towers-emblem" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <rect x="4" y="9" width="6" height="12" rx="1" />
+              <rect x="13" y="3" width="7" height="18" rx="1" />
+              <path d="M7 13h0M7 17h0M16.5 8h0M16.5 12h0M16.5 16h0" />
+            </svg>
+          </div>
+          <h2 id="towers-title" class="title" data-i18n="towers.title">
+            TOWERS
+          </h2>
+          <button
+            id="towers-close"
+            class="daily-close"
+            type="button"
+            data-i18n-aria="daily.close"
+            aria-label="Close"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12M18 6 6 18" />
+            </svg>
+          </button>
+        </div>
+        <div class="tm-stage">
+          <div id="tm-skyline" class="tm-skyline"></div>
+          <div class="tm-ground" aria-hidden="true"></div>
+        </div>
+        <div class="tm-detail">
+          <div class="tm-detail-main">
+            <span id="tm-detail-name" class="tm-detail-name title"></span>
+            <span id="tm-detail-rule" class="tm-detail-rule"></span>
+            <div class="tm-detail-row">
+              <span class="tm-detail-chip">
+                <svg class="tm-star" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 2.4l2.9 6.1 6.7.9-4.9 4.6 1.2 6.6L12 17.4l-5.9 3.2 1.2-6.6L2.4 9.4l6.7-.9z"
+                  />
+                </svg>
+                <b id="tm-detail-stars"></b>
+              </span>
+              <span id="tm-detail-floor" class="tm-detail-chip"></span>
+            </div>
+          </div>
+          <button id="tm-play" class="btn btn-primary tm-play" type="button">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 4.5v15l12-7.5z" />
+            </svg>
+            <span data-i18n="menu.play">PLAY</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="meta-toast" class="meta-toast" aria-live="polite">
+      <div class="meta-toast-inner">
+        <span id="meta-toast-icon" class="meta-toast-icon"></span>
+        <div class="meta-toast-text">
+          <span id="meta-toast-head" class="meta-toast-head"></span>
+          <span id="meta-toast-sub" class="meta-toast-sub"></span>
+        </div>
+      </div>
+    </div>
+
+    <div id="daily-toast" class="daily-toast" aria-live="polite">
+      <div class="daily-toast-inner">
+        <svg class="daily-toast-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="m8 12.4 2.8 2.8L16.2 9.6" />
+        </svg>
+        <div class="daily-toast-text">
+          <span id="daily-toast-head" class="daily-toast-head"></span>
+          <span id="daily-toast-sub" class="daily-toast-sub"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAUSE MENU MODAL (ESC / P / Button) -->
+    <div id="pause-modal" class="modal-backdrop hidden">
+      <div class="modal-card pause-card panel">
+        <div class="pause-header">
+          <div class="pause-emblem" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <rect x="6" y="4" width="4" height="16" rx="1.5" />
+              <rect x="14" y="4" width="4" height="16" rx="1.5" />
+            </svg>
+          </div>
+          <h2 class="title" data-i18n="pause.title">MISSION PAUSED</h2>
+          <div class="pause-floor-badge" id="pause-floor-label">
+            FLOOR 1 / 25 • GROUND LOBBY
+          </div>
+          <button
+            id="btn-pause-resume"
+            class="btn-pause-primary btn btn-primary"
+          >
+            <svg class="icon" viewBox="0 0 24 24">
+              <polygon points="6 3 20 12 6 21 6 3" />
+            </svg>
+            <span data-i18n="pause.resume">RESUME MISSION</span>
+            <span class="key-hint desktop-only">ESC</span>
+          </button>
+        </div>
+
+        <div class="pause-actions">
+          <div class="pause-tiles">
+            <button id="btn-pause-armory" class="pause-tile btn btn-buy">
+              <svg class="tile-icon" viewBox="0 0 24 24">
+                <rect x="2" y="7" width="20" height="14" rx="2" />
+                <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+                <path d="M2 13h20" />
+              </svg>
+              <span data-i18n="pause.armory_short">ARMORY</span>
+            </button>
+            <button id="btn-pause-restart" class="pause-tile btn btn-info">
+              <svg class="tile-icon" viewBox="0 0 24 24">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+              </svg>
+              <span data-i18n="pause.restart_short">RESTART</span>
+            </button>
+            <button id="btn-pause-sound" class="pause-tile btn btn-info">
+              <svg class="tile-icon icon-sound-on" viewBox="0 0 24 24">
+                <path
+                  d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"
+                />
+                <path d="M16 9a5 5 0 0 1 0 6" />
+                <path d="M19.364 18.364a9 9 0 0 0 0-12.728" />
+              </svg>
+              <svg class="tile-icon icon-sound-off" viewBox="0 0 24 24">
+                <path
+                  d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"
+                />
+                <line x1="22" x2="16" y1="9" y2="15" />
+                <line x1="16" x2="22" y1="9" y2="15" />
+              </svg>
+              <span id="pause-sound-status">ON</span>
+            </button>
+            <button id="btn-pause-settings" class="pause-tile btn btn-info">
+              <svg class="tile-icon" viewBox="0 0 24 24">
+                <line x1="4" y1="7" x2="20" y2="7" />
+                <line x1="4" y1="17" x2="20" y2="17" />
+                <circle cx="9" cy="7" r="2.6" />
+                <circle cx="15" cy="17" r="2.6" />
+              </svg>
+              <span data-i18n="set.tile">SETTINGS</span>
+            </button>
+            <button
+              id="btn-pause-menu"
+              class="pause-tile pause-tile-wide btn btn-danger"
+            >
+              <svg class="tile-icon" viewBox="0 0 24 24">
+                <path d="m3 10 9-7 9 7" />
+                <path d="M5 9v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9" />
+                <path d="M9 21v-6h6v6" />
+              </svg>
+              <span data-i18n="pause.main_menu">MAIN MENU</span>
+            </button>
+          </div>
+
+          <button
+            id="btn-pause-lang"
+            class="pause-lang-toggle card"
+            type="button"
+            aria-expanded="false"
+          >
+            <svg class="icon" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M2 12h20" />
+              <path
+                d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+              />
+            </svg>
+            <span class="pause-lang-label" data-i18n="pause.language">
+              LANGUAGE
+            </span>
+            <span id="pause-lang-current" class="pause-lang-current"></span>
+            <svg class="icon chevron" viewBox="0 0 24 24">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+          <div id="lang-grid" class="lang-grid hidden"></div>
+
+          <div class="pause-controls card desktop-only">
+            <div class="pause-controls-title" data-i18n="pause.controls">
+              CONTROLS
+            </div>
+            <div class="pause-controls-grid" id="pause-controls-grid"></div>
+          </div>
+
+          <div class="pause-floor-select-row card debug-only">
+            <label for="pause-floor-select" data-i18n="pause.jump"
+              >JUMP TO FLOOR:</label
+            >
+            <select id="pause-floor-select" class="pause-select"></select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOWER VICTORY (after the last floor) -->
+    <div id="victory-modal" class="modal-backdrop victory-backdrop hidden">
+      <div class="modal-card victory-card panel">
+        <div class="victory-burst" id="victory-burst" aria-hidden="true"></div>
+        <div class="victory-header">
+          <div class="victory-emblem" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 2 3 6.2v5.6c0 5.1 3.6 9.3 9 10.7 5.4-1.4 9-5.6 9-10.7V6.2z"
+              />
+              <path d="m8.4 12.2 2.5 2.5 4.7-5" class="victory-emblem-check" />
+            </svg>
+          </div>
+          <div class="modal-tag" data-i18n="victory.tag">
+            OPERATION SUCCESSFUL
+          </div>
+          <h2
+            id="victory-title"
+            class="title victory-title"
+            data-i18n="victory.secured"
+          >
+            SYNDICATE TOWER SECURED
+          </h2>
+        </div>
+        <div class="victory-body">
+          <div class="victory-tiles">
+            <div class="victory-tile card">
+              <svg
+                class="victory-tile-icon victory-star-icon"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  d="M12 2.4l2.9 6.1 6.7.9-4.9 4.6 1.2 6.6L12 17.4l-5.9 3.2 1.2-6.6L2.4 9.4l6.7-.9z"
+                />
+              </svg>
+              <span id="victory-stars" class="victory-value title">0</span>
+              <span class="victory-label" data-i18n="victory.total_stars"
+                >TOTAL STARS</span
+              >
+            </div>
+            <div class="victory-tile card">
+              <svg
+                class="victory-tile-icon icon"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="13" r="8" />
+                <path d="M12 9v4l2.5 2M9.5 2.5h5" />
+              </svg>
+              <span id="victory-time" class="victory-value title">0:00</span>
+              <span class="victory-label" data-i18n="victory.run_time"
+                >RUN TIME</span
+              >
+            </div>
+          </div>
+          <div id="victory-reward" class="victory-reward">
+            <span class="victory-reward-label" data-i18n="victory.reward"
+              >FIRST CLEAR REWARD</span
+            >
+            <div class="victory-reward-amount">
+              <svg class="victory-coin" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" class="mm-coin-face" />
+                <circle cx="12" cy="12" r="6.5" class="mm-coin-ring" />
+                <path d="M12 8v8M9.6 10.2h4.8" class="mm-coin-mark" />
+              </svg>
+              <span id="victory-merits" class="title">+0</span>
+              <span class="victory-reward-unit" data-i18n="victory.merits_unit"
+                >Merits</span
+              >
+            </div>
+          </div>
+          <p
+            id="victory-claimed"
+            class="victory-claimed hidden"
+            data-i18n="victory.claimed"
+          >
+            Reward already claimed on your first clear.
+          </p>
+          <p id="victory-tomorrow" class="tomorrow-line hidden">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3.5" y="5" width="17" height="15.5" rx="2.5" />
+              <path d="M3.5 10h17M8 3v4M16 3v4" />
+            </svg>
+            <span></span>
+          </p>
+          <div class="victory-actions">
+            <button
+              id="btn-victory-next-tower"
+              class="btn btn-primary btn-play-again victory-next-tower hidden"
+            >
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h13M13 6l6 6-6 6" />
+              </svg>
+              <span class="victory-next-label">
+                <span data-i18n="victory.next_tower">NEXT TOWER</span>
+                <small id="victory-next-tower-name"></small>
+              </span>
+            </button>
+            <button
+              id="btn-victory-endless"
+              class="btn btn-reward btn-play-again victory-endless hidden"
+            >
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M18.2 8.2c-2.6 0-4 2-6.2 3.8s-3.6 3.8-6.2 3.8a3.8 3.8 0 1 1 0-7.6c2.6 0 4 2 6.2 3.8s3.6 3.8 6.2 3.8a3.8 3.8 0 1 0 0-7.6z"
+                />
+              </svg>
+              <span data-i18n="victory.endless">ENDLESS MODE</span>
+            </button>
+            <button
+              id="btn-victory-play-again"
+              class="btn btn-primary btn-play-again"
+            >
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+              </svg>
+              <span data-i18n="victory.play_again">PLAY AGAIN</span>
+            </button>
+            <button id="btn-victory-menu" class="btn btn-info btn-play-again">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m3 10 9-7 9 7" />
+                <path d="M5 9v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9" />
+              </svg>
+              <span data-i18n="pause.main_menu">MAIN MENU</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ELEVATOR PERK PICKER (B13) -->
+    <div
+      id="perk-picker"
+      class="perk-picker hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="perk-picker-title"
+    >
+      <div class="perk-head">
+        <h2
+          id="perk-picker-title"
+          class="title perk-title"
+          data-i18n="perk.pick_title"
+        >
+          CHOOSE A PERK
+        </h2>
+        <p class="perk-hint" data-i18n="perk.pick_hint">
+          Press 1-3 or tap a card
+        </p>
+      </div>
+      <div id="perk-cards" class="perk-cards"></div>
+      <div class="perk-foot">
+        <div class="perk-timer" aria-hidden="true">
+          <i id="perk-timer-fill" class="perk-timer-fill"></i>
+        </div>
+        <button id="perk-reroll" class="btn btn-reward perk-reroll hidden">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+            <path d="M3 3v5h5" />
+          </svg>
+          <span data-i18n="perk.reroll">REROLL</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- GAME OVER MODAL -->
+    <div id="game-over-modal" class="modal-backdrop hidden">
+      <div class="modal-card gameover-card panel">
+        <div class="gameover-header">
+          <div class="gameover-emblem" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              <path d="m14.5 9-5 5" />
+              <path d="m9.5 9 5 5" />
+            </svg>
+          </div>
+          <div class="gameover-titles">
+            <div class="gameover-tag" data-i18n="gameover.armor_failure">
+              CRITICAL ARMOR FAILURE
+            </div>
+            <h1 class="title" data-i18n="gameover.officer_down">
+              OFFICER DOWN
+            </h1>
+          </div>
+        </div>
+
+        <div class="gameover-body">
+          <p id="gameover-sub">Eliminated on Floor 1 by Syndicate forces.</p>
+          <div id="gameover-record" class="gameover-record hidden"></div>
+
+          <div class="gameover-progress">
+            <div class="gameover-progress-head">
+              <span id="gameover-progress-text">0%</span>
+            </div>
+            <div class="gameover-progress-track">
+              <div
+                id="gameover-progress-fill"
+                class="gameover-progress-fill"
+              ></div>
+            </div>
+          </div>
+
+          <div class="gameover-stats">
+            <div class="gameover-stat card">
+              <span class="gameover-stat-label" data-i18n="gameover.stat_floor"
+                >FLOOR</span
+              >
+              <span id="gameover-floor" class="gameover-stat-value title"
+                >1</span
+              >
+            </div>
+            <div class="gameover-stat card">
+              <span class="gameover-stat-label" data-i18n="gameover.stat_kills"
+                >TAKEDOWNS</span
+              >
+              <span id="gameover-kills" class="gameover-stat-value title"
+                >0</span
+              >
+            </div>
+            <div class="gameover-stat card">
+              <span class="gameover-stat-label" data-i18n="go.best_combo"
+                >BEST COMBO</span
+              >
+              <span id="gameover-combo" class="gameover-stat-value title"
+                >x1</span
+              >
+            </div>
+            <div class="gameover-stat card">
+              <span class="gameover-stat-label" data-i18n="gameover.stat_score"
+                >SCORE</span
+              >
+              <span id="gameover-score" class="gameover-stat-value title"
+                >0</span
+              >
+            </div>
+          </div>
+
+          <div class="gameover-tip">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M9 18h6" />
+              <path d="M10 22h4" />
+              <path
+                d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"
+              />
+            </svg>
+            <span id="gameover-tip-text"></span>
+          </div>
+
+          <p id="gameover-tomorrow" class="tomorrow-line hidden">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3.5" y="5" width="17" height="15.5" rx="2.5" />
+              <path d="M3.5 10h17M8 3v4M16 3v4" />
+            </svg>
+            <span></span>
+          </p>
+
+          <button
+            id="btn-gameover-gear"
+            class="gameover-gear hidden"
+            type="button"
+          >
+            <svg class="icon" viewBox="0 0 24 24">
+              <rect x="2" y="7" width="20" height="14" rx="2" />
+              <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+              <path d="M2 13h20" />
+            </svg>
+            <span data-i18n="go.gear">NEW GEAR AFFORDABLE · ARMORY</span>
+          </button>
+
+          <div class="gameover-actions">
+            <button
+              id="btn-revive-now"
+              class="btn-rewarded-revive btn btn-reward"
+            >
+              <svg class="icon" viewBox="0 0 24 24">
+                <path
+                  d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"
+                />
+              </svg>
+              <span data-i18n="gameover.revive">REVIVE</span>
+            </button>
+            <button id="btn-retry" class="btn-retry btn btn-primary">
+              <svg class="icon" viewBox="0 0 24 24">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+              </svg>
+              <span id="gameover-retry-label" data-i18n="gameover.retry"
+                >RETRY FLOOR</span
+              >
+            </button>
+            <button
+              id="btn-gameover-menu"
+              class="btn-gameover-menu btn btn-info hidden"
+            >
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m3 10 9-7 9 7" />
+                <path d="M5 9v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9" />
+              </svg>
+              <span data-i18n="pause.main_menu">MAIN MENU</span>
+            </button>
+            <button
+              id="btn-gameover-armory"
+              class="btn-gameover-armory btn btn-buy"
+            >
+              <svg class="icon" viewBox="0 0 24 24">
+                <rect x="2" y="7" width="20" height="14" rx="2" />
+                <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+              </svg>
+              <span data-i18n="pause.armory_short">ARMORY</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS MODAL (opened from pause) -->
+    <div id="settings-modal" class="modal-backdrop hidden">
+      <div
+        class="modal-card settings-card panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="settings-title"
+      >
+        <div class="settings-header">
+          <div class="settings-emblem" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <line x1="4" y1="7" x2="20" y2="7" />
+              <line x1="4" y1="17" x2="20" y2="17" />
+              <circle cx="9" cy="7" r="2.6" />
+              <circle cx="15" cy="17" r="2.6" />
+            </svg>
+          </div>
+          <h2 id="settings-title" class="title" data-i18n="set.title">
+            SETTINGS
+          </h2>
+        </div>
+        <div class="settings-body">
+          <div class="settings-row card">
+            <label for="set-volume" data-i18n="set.volume"
+              >EFFECTS VOLUME</label
+            >
+            <div class="settings-slider">
+              <input
+                id="set-volume"
+                type="range"
+                min="0"
+                max="100"
+                step="5"
+                value="100"
+              />
+              <output id="set-volume-out" for="set-volume">100</output>
+            </div>
+          </div>
+          <div class="settings-row settings-row-inline card">
+            <label for="set-reduce-fx" data-i18n="set.reduce_fx"
+              >REDUCE SHAKE AND FLASH</label
+            >
+            <button
+              id="set-reduce-fx"
+              class="settings-switch"
+              type="button"
+              role="switch"
+              aria-checked="false"
+            >
+              <span class="settings-switch-knob"></span>
+            </button>
+          </div>
+          <div class="settings-row settings-row-inline card">
+            <label for="set-quality" data-i18n="set.graphics">GRAPHICS</label>
+            <select id="set-quality" class="pause-select">
+              <option value="auto" data-i18n="set.q_auto">AUTO</option>
+              <option value="low" data-i18n="set.q_low">LOW</option>
+              <option value="medium" data-i18n="set.q_medium">MEDIUM</option>
+              <option value="high" data-i18n="set.q_high">HIGH</option>
+            </select>
+          </div>
+          <button
+            id="set-replay"
+            class="btn btn-buy settings-replay"
+            type="button"
+          >
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+            </svg>
+            <span data-i18n="set.replay">REPLAY TUTORIAL</span>
+          </button>
+          <div id="set-toast" class="settings-toast" aria-live="polite"></div>
+          <button
+            id="set-back"
+            class="btn btn-primary settings-back"
+            type="button"
+          >
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+            <span data-i18n="set.back">BACK</span>
+            <span class="key-hint desktop-only">ESC</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
